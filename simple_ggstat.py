@@ -47,10 +47,15 @@ def get_statuses(c_folder):
     key: repo
     value: status"""
     repos = os.listdir(c_folder)
+    os.chdir(c_folder)
+    repos.remove('.DS_Store')
     for repo in repos:
-        if ".git" in os.listdir(repo):
+        abs_repo = str(c_folder) + "/" + str(repo)
+        if ".git" in os.listdir(abs_repo):
             this_repo = str(c_folder) + "/" + str(repo) + "/"
             os.chdir(this_repo)
+            print(this_repo)
+            print(call(["git", "status"]))
             statuses = {}
             statuses[this_repo] = call(["git status"])
     return statuses
