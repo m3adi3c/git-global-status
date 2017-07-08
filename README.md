@@ -23,6 +23,7 @@ Another argument allows the user to pass the path to the global git repos folder
 One more argument allows for an `append` mode, which can be used to append another directory to the list, through the GUI selection process.
 
 **Examples**
+
 I'm thinking of something like:
 
 ```bash
