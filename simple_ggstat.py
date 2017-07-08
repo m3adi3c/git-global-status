@@ -4,6 +4,15 @@
 # that the user has, assuming they all reside in the same directory.
 # The "central folder" can be selected either via GUI,
 # or passed as argv.
+#
+# Examples:
+#
+# $ python simple_ggstat.py
+#   Will open the interface to select central folder
+#   then print git status
+#
+# $ python simple_ggstat.py /path/to/central/folder
+#   will print directly git status
 ######################################################################
 
 
@@ -37,7 +46,7 @@ def gui_get_statuses():
     print the results """
     Tk().withdraw()
     central_folder = askdirectory()
-    print(get_statuses(central_folder))
+    get_statuses(central_folder)
 
 
 def get_statuses(c_folder):
@@ -49,16 +58,15 @@ def get_statuses(c_folder):
     repos = os.listdir(c_folder)
     os.chdir(c_folder)
     repos.remove('.DS_Store')
+    # statuses = {}
     for repo in repos:
         abs_repo = str(c_folder) + "/" + str(repo)
         if ".git" in os.listdir(abs_repo):
             this_repo = str(c_folder) + "/" + str(repo) + "/"
             os.chdir(this_repo)
-            print(this_repo)
-            print(call(["git", "status"]))
-            statuses = {}
-            statuses[this_repo] = call(["git status"])
-    return statuses
+            print("Repo: ", this_repo)
+            call(["git", "status"])
+            print("-------------------------------------")
 
 
 def path_init(path):
