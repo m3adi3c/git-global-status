@@ -15,6 +15,15 @@
 #   will print directly git status
 ######################################################################
 
+""" simple_ggstat -- Getting git status for repos in a folder
+
+This program allows you to get the git status of all
+the repos that are stored in a folder.
+
+The folder can be initialized either via a GUI,
+or if run with a path argument, it will initialize the
+central directory to that path.
+"""
 
 from sys import argv
 import os
