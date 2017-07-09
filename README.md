@@ -1,5 +1,7 @@
-# Getting git status for all repos
+# Getting git status for all modified repos
 This repo will contain scripts for getting `git status` for all the repositories on your machine, assuming they all reside in the same central directory. If not, you have to specify the paths one by one, for all the repos.
+
+It will only print the statuses for repos that have uncommited changes.
 
 I know there are [lots](https://stackoverflow.com/questions/18757843/git-status-over-all-repos#18760535) of options for this, made by much more skilled people than myself. But I couldn't miss the oportunity to learn some more programming for this purpose.
 
@@ -60,3 +62,7 @@ $ python simple_ggstat.py /path/to/central/directory
 # skip initialization,
 # run git status for the repos in the path provided
 ```
+
+
+# Screenshot
+![Screenshot in action](/scratch/git-global-status.png?raw=true "Program in action")
