@@ -9,91 +9,139 @@
 # will append /new/path to the global path of git repos
 ######################################################################
 
+from __future__ import print_function
 from sys import argv
 import os
-from subprocess import call
+from subprocess import check_output
 from tkFileDialog import askdirectory
 from Tkinter import Tk
 
-arguments = argv
 
-if len(argv) == 1:
-    gui_init()
-else:
-    if "/" in argv[1]:
-        path_init(argv[1])
-    elif "-a" in argv[1]:
-        if "/" in argv[2]:
-            append_path(argv[2])
-        else:
-            gui_append_path()
-    elif "-x" in argv[1]:
-        if "/" in argv[2]:
-            reset_path(argv[2])
-        else:
-            gui_reset_path
-    elif "-r" in argv[1]:
-        if "/" in argv[2]:
-            replace_path(argv[2])
-        else:
-            gui_replace()
-
-init_file = open(".init", "rw")
-paths_file = open(".paths", "rw")
+init_file = open(".init", "r+")
+# paths_file = open(".paths", "r+")
 
 
-def check_do_init():
-    line = init_file.readline()
-    if "yes" in line:
-        return
-    else:
-        init_file.write("yes")
-        return
-
-
-def gui_init():
-    check_do_init()
-    gui_get_statuses()
-
-
-def gui_get_statuses():
-    Tk().withdraw
-    central_folder = askdirectory()
-    print(get_statuses(central_folder))
-
-
-def get_statuses(c_folder):
-    paths_file.write(c_folder)
-    repos = os.listdir(c_folder)
-    for repo in repos:
-        if ".git" in os.listdir(repo):
-            this_repo = str(c_folder) + "/" + str(repo) + "/"
-            os.chdir(this_repo)
-            statuses = {}
-            statuses[this_repo] = call(["git status"])
-        else:
-            next
-    return statuses
+def run_w_paths():
+    """ Run the program, using the paths
+    stored in the .paths file. """
+    with open(".paths", "r") as pf:
+        for line in pf:
+            if "/" not in line:
+                print("""
+                Central directory not initialized.
+                Rerun with -r [path]. """)
+                return
+            else:
+                pretty_print_mod(get_statuses(line))
 
 
 def path_init(path):
+    """ Initialize the paths with given path. """
     check_do_init()
-    get_statuses(path)
+    with open(".paths", 'w') as pfile:
+        pfile.truncate()
+        pfile.write(path)
+    run_w_paths()
 
 
-def append_path(path):
-    check_do_init()
-    old_repos = os.listdir(paths_file.readline())
-    paths_file.write("\n", path)
-    new_repos = old_repos.append(path)
-    print(get_statuses(new_repos))
+def gui_reset():
+    """ Reset/initialize paths via GUI. """
+    Tk().withdraw()
+    central_folder = askdirectory()
+    with open(".paths", 'w') as pfile:
+        pfile.truncate()
+        pfile.write(central_folder)
+    run_w_paths()
 
 
-def gui_append_path():
-    Tk().withdraw
-    appended_path = askdirectory()
+def gui_append():
+    """ Append path selected via GUI to central paths. """
+    Tk().withdraw()
+    central_folder = askdirectory()
+    with open(".paths", 'a') as pfile:
+        pfile.write(central_folder)
+    run_w_paths()
 
 
+def path_reset(path):
+    """ Reset/initialize paths via argv. """
+    with open(".paths", 'w') as pfile:
+        pfile.truncate()
+        pfile.write(path)
+    run_w_paths()
+
+
+def path_append(path):
+    """ Append path passed as argv to central paths. """
+    with open(".paths", 'a') as pfile:
+        pfile.write(path)
+    run_w_paths()
+
+
+def get_statuses(c_folder):
+    """ Get git status for all the directories
+    in the central directory.
+    Return the list as a dictionary.
+    key: repo
+    value: status"""
+    repos = os.listdir(c_folder)
+    os.chdir(c_folder)
+    repos.remove('.DS_Store')
+    statuses = {}
+    for repo in repos:
+        abs_repo = str(c_folder) + "/" + str(repo)
+        if ".git" in os.listdir(abs_repo):
+            this_repo = str(c_folder) + "/" + str(repo) + "/"
+            os.chdir(this_repo)
+            statuses[this_repo] = check_output("git status", shell=True)
+    return statuses
+
+
+def check_do_init():
+    """ Write 'yes' to the .init file
+    if run for the first time.
+    Else, pass. """
+    init_line = init_file.readline()
+    if "yes" not in init_line:
+        init_file.write("yes")
+
+
+def pretty_print_dict(d):
+    """ Print all the repositories
+    and their git statuses. """
+    for i in d:
+        print("REPO: " + str(i))
+        print("STATUS: " + str(d[i]))
+        print("------------------------------")
+
+
+def pretty_print_mod(d):
+    """ Print only the repos
+    that have changes. """
+    for i in d:
+        if "nothing to commit" not in d[i]:
+            print("REPO: " + str(i))
+            print("STATUS: " + str(d[i]))
+            print("------------------------------")
+
+
+if len(argv) == 1:
+    run_w_paths()
+elif len(argv) == 2:
+    if "/" in argv[1]:
+        path_init(argv[1])
+    elif "-r" in argv[1]:
+        gui_reset()
+    elif "-a" in argv[1]:
+        gui_append()
+elif len(argv) == 3:
+    if "-r" in argv[1] and "/" in argv[2]:
+        path_reset(argv[2])
+    if "-a" in argv[1] and "/" in argv[2]:
+        path_append(argv[2])
 
 
 init_file.close()
+
+
+print("========== PROGRAM TERMINATED ==========")
