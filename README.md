@@ -7,6 +7,12 @@ I will write first a Python script, but hopefully I will be able to come up with
 
 **Remark:** The main intention is educational (for myself first) and most probably it will *not* get fancy or "pro", in any sense that may have. So keep that in mind whenever you find issues or annoyances with it.
 
+
+**REMARK:** Description (as well as `pydoc`) is undergoing rewriting, as I got new ideas. :)
+Read into the source of `git-global-status.py` to find the actual functions until then.
+
+-------------------------------------------
+
 ## Plan
 - get the global git repos folder from the user (initialization step -- only first time);
 - print status per repo.
