@@ -16,20 +16,20 @@ all the repos that are stored in a folder.
 It can also take arguments, to perform various tasks.
 
 General form:
-$ python git-global-status [options] [path]
+$ python git-global-status.py [action] [mode] [path]
 
-Options:
+Actions:
 -r = reset/initialize the central directory with repos;
 -a = append to the list of central directories;
 
-If another option, -s is present, it will work in "silent mode",
-i.e. without running git status.
+The (optional) mode can be:
+-s = run in "silent mode", i.e. without running git status.
 
 Example:
-$ python git-global-status -a -s /one/more/path
+$ python git-global-status.py -a -s /one/more/path
 # will append /one/more/path to the list of paths.
 
-With any option, if no explicit path is provided as a last argument,
+With any action or mode, if no explicit path is provided as a last argument,
 the GUI version will take over and let you select the directory.
 
 If the directories were initialized (i.e. at least once, the

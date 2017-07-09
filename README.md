@@ -1,5 +1,5 @@
 # Getting git status for all repos
-This repo will contain scripts for getting `git status` for all the repositories on your machine, assuming they all reside in the same directory.
+This repo will contain scripts for getting `git status` for all the repositories on your machine, assuming they all reside in the same central directory. If not, you have to specify the paths one by one, for all the repos.
 
 I know there are [lots](https://stackoverflow.com/questions/18757843/git-status-over-all-repos#18760535) of options for this, made by much more skilled people than myself. But I couldn't miss the oportunity to learn some more programming for this purpose.
 
@@ -8,40 +8,40 @@ I will write first a Python script, but hopefully I will be able to come up with
 **Remark:** The main intention is educational (for myself first) and most probably it will *not* get fancy or "pro", in any sense that may have. So keep that in mind whenever you find issues or annoyances with it.
 
 
-**REMARK:** Description (as well as `pydoc`) is undergoing rewriting, as I got new ideas. :)
-Read into the source of `git-global-status.py` to find the actual functions until then.
-
--------------------------------------------
-
-## Plan
-- get the global git repos folder from the user (initialization step -- only first time);
-- print status per repo.
-
-### Options
-Normally, the program makes sure that the initialization (i.e. getting the global repos folder) is run only the first time. This is done in a straightforward ("dumb?") way: at first run, it writes `yes` in an `.init` file. Then, for subsequent runs, it checks whether there's `yes` in the file. If so, skip the initialization.
-
-However, the program can be run with arguments. 
-
-One argument allows for a `reset` option, that reruns the initialization step.
-
-Another argument allows the user to pass the path to the global git repos folder directly, thus skipping the selection process. If the user so chooses, they will be able to `append` or `replace` the existent path with the input.
-
-One more argument allows for an `append` mode, which can be used to append another directory to the list, through the GUI selection process.
-
-**Examples**
-
-I'm thinking of something like:
+# Description and Use Examples
+The "main" program is `git-global-status.py`, which can be run in the general form:
 
 ```bash
-$ python git-global-status -a [-r] /new/path/
-# appends [replaces] the /new/path to [with] the existing path
+$ python git-global-status.py [action] [mode] [path]
+```
 
-$ python git-global-status -r [-a]
-# runs the script, resetting the path [appending to the path]
-# and prompting the user to select a new one
-# (the initialization process)
+The actions are:
+- `-r` = reset/initialize the central directory with repos;
+- `-a` = append to the list of central directories;
 
-$ python git-global-status /central/repos/path/
-# initializes the path to argv[1] and 
-# prints the git status for all the repos
+The (optional) mode can be:
+- `-s` = run in "silent mode", i.e. without running `git status`.
+
+Example:
+
+```bash
+$ python git-global-status.py -a -s /one/more/path
+# appends /one/more/path to the list of paths
+```
+
+With any action or mode, if no explicit path is provided as a last argument, the GUI version will take over and let you select the directory.
+
+If the directories were initialized (i.e. at least once, the program was started with the `-r` action), it can be called without options afterwards, to operate on the same central directory.
+
+Example uses:
+
+```bash
+$ python git-global-status.py -r /path/to/central/directory
+# initializes the path to /path/to/central/directory
+
+$ python git-global-status.py -a -s /one/more/path
+# appends /one/more/path "silently", i.e. will not run git status after
+
+$ python git-global-status.py -r
+# will start the GUI selector for central directory and run git status for all the repos in it
 ```
