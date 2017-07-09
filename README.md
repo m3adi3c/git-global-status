@@ -45,3 +45,18 @@ $ python git-global-status.py -a -s /one/more/path
 $ python git-global-status.py -r
 # will start the GUI selector for central directory and run git status for all the repos in it
 ```
+
+## Simple Version
+Before making the "full version", I made a toy example, `simple_ggstat.py`, which does not take any options or modes.
+
+It can be used like:
+
+```bash
+$ python simple_ggstat.py
+# open GUI selector for central directory,
+# then run git status for the repos in it
+
+$ python simple_ggstat.py /path/to/central/directory
+# skip initialization,
+# run git status for the repos in the path provided
+```
