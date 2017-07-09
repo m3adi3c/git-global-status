@@ -18,7 +18,7 @@
 
 from sys import argv
 import os
-from subprocess import call
+from subprocess import check_output
 from tkFileDialog import askdirectory
 from Tkinter import Tk
 
@@ -46,7 +46,8 @@ def gui_get_statuses():
     print the results """
     Tk().withdraw()
     central_folder = askdirectory()
-    get_statuses(central_folder)
+    pretty_print_mod(get_statuses(central_folder))
+#   pretty_print_dict(get_statuses(central_folder))
 
 
 def get_statuses(c_folder):
@@ -58,21 +59,40 @@ def get_statuses(c_folder):
     repos = os.listdir(c_folder)
     os.chdir(c_folder)
     repos.remove('.DS_Store')
-    # statuses = {}
+    statuses = {}
     for repo in repos:
         abs_repo = str(c_folder) + "/" + str(repo)
         if ".git" in os.listdir(abs_repo):
-            this_repo = str(c_folder) + "/" + str(repo) + "/"
+            this_repo = str(c_folder) + str(repo) + "/"
             os.chdir(this_repo)
-            print("Repo: ", this_repo)
-            call(["git", "status"])
-            print("-------------------------------------")
+            statuses[this_repo] = check_output("git status", shell=True)
+    return statuses
+
+
+def pretty_print_dict(d):
+    """ Print all the repositories
+    and their git statuses. """
+    for i in d:
+        print("REPO: " + str(i))
+        print("STATUS: " + str(d[i]))
+        print("------------------------------")
+
+
+def pretty_print_mod(d):
+    """ Print only the repositories
+    that have changes. """
+    for i in d:
+        if "nothing to commit" not in d[i]:
+            print("REPO: " + str(i))
+            print("STATUS: " + str(d[i]))
+            print("------------------------------")
 
 
 def path_init(path):
     """ Run the program with the path specified as argv[1] """
     check_do_init()
-    get_statuses(path)
+    pretty_print_mod(get_statuses(path))
+    # pretty_print_dict(get_statuses(path))
 
 
 if len(argv) == 1:
