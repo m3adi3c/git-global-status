@@ -64,5 +64,6 @@ $ python simple_ggstat.py /path/to/central/directory
 ```
 
 
-# Screenshot
+# Screenshots
 ![Screenshot in action](/scratch/git-global-status.png?raw=true "Program in action")
+![Screenshot -rs](/scratch/ggstat-rs.png?raw=true "Silently set path")
