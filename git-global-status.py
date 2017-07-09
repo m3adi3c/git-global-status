@@ -9,6 +9,11 @@
 # will append /new/path to the global path of git repos
 ######################################################################
 
+"""
+This is the documentation
+"""
+
+
 from __future__ import print_function
 from sys import argv
 import os
@@ -18,7 +23,6 @@ from Tkinter import Tk
 
 
 init_file = open(".init", "r+")
-# paths_file = open(".paths", "r+")
 
 
 def run_w_paths():
@@ -32,7 +36,7 @@ def run_w_paths():
                 Rerun with -r [path]. """)
                 return
             else:
-                pretty_print_mod(get_statuses(line))
+                pretty_print_mod(get_statuses(line.rstrip()))
 
 
 def path_init(path):
@@ -40,41 +44,61 @@ def path_init(path):
     check_do_init()
     with open(".paths", 'w') as pfile:
         pfile.truncate()
-        pfile.write(path)
+        print(path, file=pfile)
     run_w_paths()
+
+
+def gui_silent_reset():
+    """ Reset/initialize paths via GUI and NOT get statuses. """
+    Tk().withdraw()
+    central_folder = askdirectory()
+    with open(".paths", 'w') as pfile:
+        pfile.truncate()
+        print(central_folder, file=pfile)
 
 
 def gui_reset():
-    """ Reset/initialize paths via GUI. """
+    """ Reset/initialize paths via GUI and get statuses. """
+    gui_silent_reset()
+    run_w_paths()
+
+
+def gui_silent_append():
+    """ Append path selected via GUI and NOT get statuses. """
     Tk().withdraw()
     central_folder = askdirectory()
-    with open(".paths", 'w') as pfile:
-        pfile.truncate()
-        pfile.write(central_folder)
-    run_w_paths()
+    with open(".paths", 'a') as pfile:
+        print(central_folder, file=pfile)
 
 
 def gui_append():
-    """ Append path selected via GUI to central paths. """
-    Tk().withdraw()
-    central_folder = askdirectory()
-    with open(".paths", 'a') as pfile:
-        pfile.write(central_folder)
+    """ Append path selected via GUI to central paths and get statuses.  """
+    gui_silent_append()
     run_w_paths()
+
+
+def silent_path_reset(path):
+    """ Reset/initialize paths via argv and NOT get statuses. """
+    with open(".paths", 'w') as pfile:
+        pfile.truncate()
+        print(path, file=pfile)
 
 
 def path_reset(path):
-    """ Reset/initialize paths via argv. """
-    with open(".paths", 'w') as pfile:
-        pfile.truncate()
-        pfile.write(path)
+    """ Reset/initialize paths via argv and get statuses. """
+    silent_path_reset(path)
     run_w_paths()
 
 
-def path_append(path):
-    """ Append path passed as argv to central paths. """
+def silent_path_append(path):
+    """ Append path passed as argv to central paths and NOT get statuses. """
     with open(".paths", 'a') as pfile:
-        pfile.write(path)
+        print(path, file=pfile)
+
+
+def path_append(path):
+    """ Append path passed as argv to central paths and get statuses. """
+    silent_path_append(path)
     run_w_paths()
 
 
@@ -90,10 +114,11 @@ def get_statuses(c_folder):
     statuses = {}
     for repo in repos:
         abs_repo = str(c_folder) + "/" + str(repo)
-        if ".git" in os.listdir(abs_repo):
-            this_repo = str(c_folder) + "/" + str(repo) + "/"
-            os.chdir(this_repo)
-            statuses[this_repo] = check_output("git status", shell=True)
+        if os.path.isdir(abs_repo):
+            if ".git" in os.listdir(abs_repo):
+                this_repo = str(c_folder) + "/" + str(repo) + "/"
+                os.chdir(this_repo)
+                statuses[this_repo] = check_output("git status", shell=True)
     return statuses
 
 
@@ -118,6 +143,7 @@ def pretty_print_dict(d):
 def pretty_print_mod(d):
     """ Print only the repos
     that have changes. """
+    print()
     for i in d:
         if "nothing to commit" not in d[i]:
             print("REPO: " + str(i))
@@ -135,11 +161,26 @@ elif len(argv) == 2:
     elif "-a" in argv[1]:
         gui_append()
 elif len(argv) == 3:
-    if "-r" in argv[1] and "/" in argv[2]:
-        path_reset(argv[2])
-    if "-a" in argv[1] and "/" in argv[2]:
-        path_append(argv[2])
-
+    if "-r" in argv[1]:
+        if "/" in argv[2]:
+            path_reset(argv[2])
+        elif "-s" in argv[2]:
+            gui_silent_reset()
+    if "-a" in argv[1]:
+        if "/" in argv[2]:
+            path_append(argv[2])
+        elif "-s" in argv[2]:
+            gui_silent_append()
+elif len(argv) == 4:
+    if "-s" in argv[2]:
+        if "-r" in argv[1]:
+            if "/" in argv[3]:
+                silent_path_reset(argv[3])
+        if "-a" in argv[1]:
+            if "/" in argv[3]:
+                silent_path_append(argv[3])
+else:
+    print("Invalid arguments. Check program documentation and retry.")
 
 init_file.close()
 
