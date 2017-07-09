@@ -9,8 +9,32 @@
 # will append /new/path to the global path of git repos
 ######################################################################
 
-"""
-This is the documentation
+""" git-global-status -- Getting git status for all repos
+
+This program allows you to get the git status of
+all the repos that are stored in a folder.
+It can also take arguments, to perform various tasks.
+
+General form:
+$ python git-global-status [options] [path]
+
+Options:
+-r = reset/initialize the central directory with repos;
+-a = append to the list of central directories;
+
+If another option, -s is present, it will work in "silent mode",
+i.e. without running git status.
+
+Example:
+$ python git-global-status -a -s /one/more/path
+# will append /one/more/path to the list of paths.
+
+With any option, if no explicit path is provided as a last argument,
+the GUI version will take over and let you select the directory.
+
+If the directories were initialized (i.e. at least once, the
+program was started with the -r option), it can be called
+without options afterwards, to operate on the same central directory.
 """
 
 
@@ -22,7 +46,8 @@ from tkFileDialog import askdirectory
 from Tkinter import Tk
 
 
-init_file = open(".init", "r+")
+__author__ = "Adrian Manea"
+__version__ = '1.0'
 
 
 def run_w_paths():
@@ -126,9 +151,10 @@ def check_do_init():
     """ Write 'yes' to the .init file
     if run for the first time.
     Else, pass. """
-    init_line = init_file.readline()
-    if "yes" not in init_line:
-        init_file.write("yes")
+    with open(".init", 'r+') as ifile:
+        iline = ifile.readline()
+        if "yes" not in iline:
+            ifile.write("yes")
 
 
 def pretty_print_dict(d):
@@ -181,8 +207,6 @@ elif len(argv) == 4:
                 silent_path_append(argv[3])
 else:
     print("Invalid arguments. Check program documentation and retry.")
-
-init_file.close()
 
 
 print("========== PROGRAM TERMINATED ==========")
