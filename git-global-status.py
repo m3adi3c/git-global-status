@@ -80,6 +80,7 @@ def gui_silent_reset():
     with open(".paths", 'w') as pfile:
         pfile.truncate()
         print(central_folder, file=pfile)
+    print("Path set to " + str(central_folder))
 
 
 def gui_reset():
@@ -94,6 +95,7 @@ def gui_silent_append():
     central_folder = askdirectory()
     with open(".paths", 'a') as pfile:
         print(central_folder, file=pfile)
+    print(str(central_folder) + " appended to paths.")
 
 
 def gui_append():
@@ -107,6 +109,7 @@ def silent_path_reset(path):
     with open(".paths", 'w') as pfile:
         pfile.truncate()
         print(path, file=pfile)
+    print("Path reset to " + str(path))
 
 
 def path_reset(path):
@@ -119,6 +122,7 @@ def silent_path_append(path):
     """ Append path passed as argv to central paths and NOT get statuses. """
     with open(".paths", 'a') as pfile:
         print(path, file=pfile)
+    print("Appended path: " + str(path))
 
 
 def path_append(path):
