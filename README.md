@@ -47,10 +47,10 @@ pipenv install
 ```
 
 # Description and Use Examples
-The "main" program is `git-global-status.py`, which can be run in the general form:
+The "main" program is `git_global_status.py`, which can be run in the general form:
 
 ```bash
-$ pipenv run python git-global-status.py [action] [mode] [path]
+$ pipenv run python git_global_status.py [action] [mode] [path]
 ```
 
 The preceeding `pipenv run` marks the fact that the following command is executed under the 
@@ -66,7 +66,7 @@ The (optional) mode can be:
 Example:
 
 ```bash
-$ pipenv run python git-global-status.py -a -s /one/more/path
+$ pipenv run python git_global_status.py -a -s /one/more/path
 # appends /one/more/path to the list of paths
 ```
 
@@ -77,13 +77,13 @@ If the directories were initialized (i.e. at least once, the program was started
 Example uses:
 
 ```bash
-$ python git-global-status.py -r /path/to/central/directory
+$ python git_global_status.py -r /path/to/central/directory
 # initializes the path to /path/to/central/directory
 
-$ python git-global-status.py -a -s /one/more/path
+$ python git_global_status.py -a -s /one/more/path
 # appends /one/more/path "silently", i.e. will not run git status after
 
-$ python git-global-status.py -r
+$ python git_global_status.py -r
 # will start the GUI selector for central directory and run git status for all the repos in it
 ```
 
