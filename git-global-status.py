@@ -42,8 +42,8 @@ from __future__ import print_function
 from sys import argv
 import os
 from subprocess import check_output
-from tkFileDialog import askdirectory
-from Tkinter import Tk
+from tkinter.filedialog import askdirectory
+from tkinter import Tk
 
 
 __author__ = "Adrian Manea"
