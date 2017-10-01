@@ -10,12 +10,51 @@ I will write first a Python script, but hopefully I will be able to come up with
 **Remark:** The main intention is educational (for myself first) and most probably it will *not* get fancy or "pro", in any sense that may have. So keep that in mind whenever you find issues or annoyances with it.
 
 
+## Requirements
+- Python >= 3
+- [pipenv](http://docs.pipenv.org/en/latest/#)
+
+## Getting Started
+
+**You should have** `python >= 3` **installed on your machine**. To do that you can follow [this guide]( http://docs.python-guide.org/en/latest/starting/install3/osx/#install3-osx).
+
+1. Install pipenv [pipenv](http://docs.pipenv.org/en/latest/)
+
+``` 
+pip install pipenv
+```
+
+2. Set Python 3 as the main python version and create the virtualenv by using the command `pipenv --three`
+
+``` 
+pipenv --three
+```
+
+for installing your default Python version when running `$ python3`.
+If you want to run a specific version of python you can use the following command
+
+```
+pipenv --python=pythonX.Y
+```
+
+where X.Y is Python's version.
+For example `pipenv --python=python3.6`.
+
+3. Install all dependencies
+
+```
+pipenv install
+```
+
 # Description and Use Examples
 The "main" program is `git-global-status.py`, which can be run in the general form:
 
 ```bash
-$ python git-global-status.py [action] [mode] [path]
+$ pipenv run python git-global-status.py [action] [mode] [path]
 ```
+
+The preceeding `pipenv run` marks the fact that the following command is executed under the 
+pipenv virtual environment, not the global one. 
 
 The actions are:
 - `-r` = reset/initialize the central directory with repos;
@@ -27,7 +66,7 @@ The (optional) mode can be:
 Example:
 
 ```bash
-$ python git-global-status.py -a -s /one/more/path
+$ pipenv run python git-global-status.py -a -s /one/more/path
 # appends /one/more/path to the list of paths
 ```
 
